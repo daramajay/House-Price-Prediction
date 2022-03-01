@@ -1,0 +1,78 @@
+---
+output: 
+  html_document:
+    code_folding: hide
+---
+
+# **Include library**
+```{r}
+library(ggplot2)
+```
+
+# **Read data**
+```{r}
+data <- read.csv('data.csv')
+summary(data)
+```
+
+# **Histogram of price**
+```{r}
+hist(data$price, main = 'Price', breaks = 200)
+```
+
+# **Histogram of price in specific range 0 - 5,000,000**
+```{r}
+hist(data$price, main = 'Price', breaks = 200, xlim = c(0, 5e6))
+```
+
+# **Histogram of sqft_living**
+```{r}
+hist(data$sqft_living, main = 'Square feet of living room', breaks = 200)
+```
+
+# **Histogram of sqft_lot**
+```{r}
+hist(data$sqft_lot, main = 'Square feet of lot', breaks = 200)
+```
+
+# **Histogram of sqft_above**
+```{r}
+hist(data$sqft_above, main = 'Square feet of above floor', breaks = 200)
+```
+
+# **Histogram of sqft_basement**
+```{r}
+hist(data$sqft_basement, main = 'Square feet of basement', breaks = 200)
+```
+
+# **Histogram of yr_built**
+```{r}
+hist(data$yr_built, main = 'Year built', breaks = 200)
+```
+
+# **Boxplot of Price by City**
+```{r}
+pl <- qplot(data = data, x = city, y = price, main = 'House price by city', size = I(0.5), shape = I(15))
+pl + geom_boxplot() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+# **Boxplot of Year Built by City**
+```{r}
+pl2 <- qplot(data = data, x = city, y = yr_built, main = 'Year built by city', size = I(0.5), shape = I(15))
+pl2 + geom_boxplot() + theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+# **Scatterplot of Price and sqft_living, where price is in 0 - 2,500,000 and sqft_living is in 0 - 5,000**
+```{r}
+qplot(data = data, x = sqft_living, y = price, size = I(0.5), shape = I(15), main = 'Scatter plot of Price and square feet of living room', ylim = c(0, 2.5e6), xlim = c(0, 5000))
+```
+
+# **Linear regression, regression price by sqft_living, considering only price in 0 - 2,500,000 and sqft_living in 0 - 5,000**
+```{r}
+filtered_data = data[(data$price <= 2.5e6) & (data$sqft_living <= 5000),]
+price = filtered_data$price
+sqft_living = filtered_data$sqft_living
+plot(sqft_living, price)
+model <- lm(price ~ sqft_living)
+points(sqft_living, model$coefficients[1] + model$coefficients[2] * sqft_living, type = 'l', col = 4)
+```
